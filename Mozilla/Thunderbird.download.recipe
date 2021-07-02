@@ -5,7 +5,7 @@
     <key>Description</key>
     <string>Downloads Thunderbird disk image.
 Some useful values for RELEASE are: 'latest', 'beta-latest'.
-LOCALE controls the language localization to be downloded.
+LOCALE controls the language localization to be downloaded.
 Examples include 'en-US', 'de', 'sv-SE', and 'zh-TW'
 See the following URLs for more info:
     http://ftp.mozilla.org/pub/thunderbird/releases/latest/README.txt
@@ -20,8 +20,6 @@ See the following URLs for more info:
         <string>en_US</string>
         <key>NAME</key>
         <string>Thunderbird</string>
-        <key>DISABLE_CODE_SIGNATURE_VERIFICATION</key>
-        <false/>
     </dict>
     <key>MinimumVersion</key>
     <string>2.0</string>
