@@ -65,6 +65,7 @@ class GenerateRelocatablePython(Processor):
             shutil.rmtree(dest)
         script_path = os.path.join(target_dir, "make_relocatable_python_framework.py")
         cmd = [
+            "/usr/local/autopkg/python",
             script_path,
             "--python-version",
             self.env["python_version"],
@@ -74,6 +75,7 @@ class GenerateRelocatablePython(Processor):
             dest,
         ]
         self.output("Building relocatable python framework...")
+        self.output(f"Command: {' '.join(cmd)}", verbose_level=4)
         try:
             results = subprocess.run(cmd, text=True, check=True)
         except subprocess.CalledProcessError as e:
