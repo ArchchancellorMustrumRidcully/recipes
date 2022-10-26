@@ -7,21 +7,16 @@
 organization requires code signature, it is recommend to internally sign
 the application.
 
-Downloads and imports the latest version of the Munki tools via
+Downloads and imports version 6 of the Munki tools via
 the official releases listing on GitHub. You can set INCLUDE_PRERELEASES
 to any value to have this recipe pull prerelease versions.
 
-Note that Munki 4+ includes an additional component pkg, munkitools_app_usage.
+Note that Munki 6 includes an optional component pkg, munkitools_app_usage.
 This recipe imports this to the Munki with the appropriate 'requires' key,
 however as it is considered an optional component, this recipe does not
 add it as an update_for any Munki component. Admins should add
 munkitools_app_usage to a manifest manually if its installation on clients
 is desired.
-
-Note that Munki 4+ offers the option to include Python to be embedded 
-in preparation for macOS no longer including the Python environment in future OSes.
-This recipe includes the embedded Python installation and adds the Python package
-as a requirement to the other munki pkginfos.
 
 This recipe cannot be overridden to pull a download from an alternate location.
 
@@ -33,13 +28,13 @@ descending by tag names according to LooseVersion semantics.
 MUNKI_ICON should be overridden with your icon name.
 </string>
     <key>Identifier</key>
-    <string>com.github.autopkg.munki.munkitools</string>
+    <string>com.github.autopkg.munki.munkitools6</string>
     <key>Input</key>
     <dict>
         <key>INCLUDE_PRERELEASES</key>
         <string></string>
         <key>NAME</key>
-        <string>munkitools</string>
+        <string>munkitools6</string>
         <key>MUNKI_CATALOG</key>
         <string>development</string>
         <key>MUNKI_CATEGORY</key>
@@ -103,7 +98,7 @@ MUNKI_ICON should be overridden with your icon name.
             <key>Arguments</key>
             <dict>
                 <key>asset_regex</key>
-                <string>^munkitools-.*?pkg$</string>
+                <string>^munkitools-6.*?pkg$</string>
                 <key>github_repo</key>
                 <string>munki/munki</string>
                 <key>include_prereleases</key>
@@ -186,7 +181,7 @@ MUNKI_ICON should be overridden with your icon name.
             <key>Arguments</key>
             <dict>
                 <key>pattern</key>
-                <string>%RECIPE_CACHE_DIR%/unpack/munkitools_app*.pkg</string>
+                <string>%RECIPE_CACHE_DIR%/unpack/munkitools_app[.-]*pkg</string>
             </dict>
         </dict>
         <dict>
@@ -286,7 +281,7 @@ MUNKI_ICON should be overridden with your icon name.
                     <key>icon_name</key>
                     <string>%MUNKI_ICON%</string>
                     <key>minimum_os_version</key>
-                    <string>10.10.0</string>
+                    <string>10.11</string>
                     <key>name</key>
                     <string>%MUNKITOOLS_CORE_NAME%</string>
                     <key>requires</key>
@@ -325,7 +320,7 @@ MUNKI_ICON should be overridden with your icon name.
                     <key>icon_name</key>
                     <string>%MUNKI_ICON%</string>
                     <key>minimum_os_version</key>
-                    <string>10.10.0</string>
+                    <string>10.11</string>
                     <key>name</key>
                     <string>%MUNKITOOLS_ADMIN_NAME%</string>
                     <key>unattended_install</key>
@@ -364,7 +359,7 @@ MUNKI_ICON should be overridden with your icon name.
                     <key>icon_name</key>
                     <string>%MUNKI_ICON%</string>
                     <key>minimum_os_version</key>
-                    <string>10.10.0</string>
+                    <string>10.11</string>
                     <key>name</key>
                     <string>%MUNKITOOLS_APP_NAME%</string>
                     <key>requires</key>
@@ -404,7 +399,7 @@ MUNKI_ICON should be overridden with your icon name.
                     <key>icon_name</key>
                     <string>%MUNKI_ICON%</string>
                     <key>minimum_os_version</key>
-                    <string>10.10.0</string>
+                    <string>10.11</string>
                     <key>name</key>
                     <string>%MUNKITOOLS_APP_USAGE_NAME%</string>
                     <key>requires</key>
@@ -444,7 +439,7 @@ MUNKI_ICON should be overridden with your icon name.
                     <key>icon_name</key>
                     <string>%MUNKI_ICON%</string>
                     <key>minimum_os_version</key>
-                    <string>10.8.0</string>
+                    <string>10.11</string>
                     <key>name</key>
                     <string>%MUNKITOOLS_LAUNCHD_NAME%</string>
                 </dict>
@@ -476,7 +471,7 @@ MUNKI_ICON should be overridden with your icon name.
                     <key>icon_name</key>
                     <string>%MUNKI_ICON%</string>
                     <key>minimum_os_version</key>
-                    <string>10.8.0</string>
+                    <string>10.11</string>
                     <key>name</key>
                     <string>%MUNKITOOLS_PYTHON_NAME%</string>
                     <key>unattended_install</key>
