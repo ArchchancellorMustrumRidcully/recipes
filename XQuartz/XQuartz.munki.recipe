@@ -3,7 +3,7 @@
 <plist version="1.0">
     <dict>
         <key>Description</key>
-        <string>Downloads latest XQuartz disk image and imports into Munki.</string>
+        <string>Downloads latest XQuartz package and imports into Munki.</string>
         <key>Identifier</key>
         <string>com.github.autopkg.munki.xquartz</string>
         <key>Input</key>
@@ -48,7 +48,7 @@ The XQuartz project is an open-source effort to develop a version of the X.Org X
             <key>Arguments</key>
             <dict>
                 <key>flat_pkg_path</key>
-                <string>%pathname%/XQuartz.pkg</string>
+                <string>%pathname%</string>
                 <key>destination_path</key>
                 <string>%RECIPE_CACHE_DIR%/unpack</string>
             </dict>
