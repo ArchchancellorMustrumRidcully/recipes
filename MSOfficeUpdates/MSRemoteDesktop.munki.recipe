@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
     <key>Description</key>
-    <string>Downloads the latest MS Teams pkg,
+    <string>Downloads the latest Microsoft Remote Desktop pkg,
 appends the version to the end of the filename, and imports into
 Munki.
 
@@ -28,13 +28,13 @@ VERSION supports one value: 'latest', which will download
 the latest full update for the given CHANNEL.
 </string>
     <key>Identifier</key>
-    <string>com.github.autopkg.munki.MSTeams2</string>
+    <string>com.github.autopkg.munki.MSRemoteDesktop</string>
     <key>MinimumVersion</key>
     <string>1.4</string>
     <key>Input</key>
     <dict>
         <key>NAME</key>
-        <string>MSTeams</string>
+        <string>MSRemoteDesktop</string>
         <key>MUNKI_REPO_SUBDIR</key>
         <string>apps</string>
         <key>munki_required_update_name</key>
@@ -43,8 +43,7 @@ the latest full update for the given CHANNEL.
         <dict>
             <key>blocking_applications</key>
             <array>
-                <string>Microsoft Teams</string>
-                <string>Microsoft Teams (work or school)</string>
+                <string>Microsoft Remote Desktop</string>
                 <string>Microsoft Error Reporting</string>
                 <string>Microsoft AutoUpdate</string>
             </array>
@@ -53,7 +52,7 @@ the latest full update for the given CHANNEL.
                 <string>testing</string>
             </array>
             <key>display_name</key>
-            <string>Microsoft Teams</string>
+            <string>Microsoft Remote Desktop</string>
             <key>developer</key>
             <string>Microsoft</string>
             <key>name</key>
@@ -63,7 +62,7 @@ the latest full update for the given CHANNEL.
         </dict>
     </dict>
     <key>ParentRecipe</key>
-    <string>com.github.autopkg.download.MSTeams2</string>
+    <string>com.github.autopkg.download.MSRemoteDesktop</string>
     <key>Process</key>
     <array>
         <dict>
