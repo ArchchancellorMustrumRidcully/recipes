@@ -3,18 +3,18 @@
 <plist version="1.0">
 <dict>
     <key>Description</key>
-    <string>Downloads latest VLC disk image and builds a package.</string>
+    <string>Downloads the latest Yojimbo and creates a package.</string>
     <key>Identifier</key>
-    <string>com.github.autopkg.pkg.VLC</string>
+    <string>com.github.autopkg.pkg.Yojimbo</string>
     <key>Input</key>
     <dict>
         <key>NAME</key>
-        <string>VLC</string>
+        <string>Yojimbo</string>
     </dict>
     <key>MinimumVersion</key>
     <string>0.2.0</string>
     <key>ParentRecipe</key>
-    <string>com.github.autopkg.download.VLC</string>
+    <string>com.github.autopkg.download.yojimbo</string>
     <key>Process</key>
     <array>
         <dict>
@@ -46,22 +46,9 @@
             <key>Arguments</key>
             <dict>
                 <key>source_path</key>
-                <string>%pathname%/VLC.app</string>
+                <string>%pathname%/Yojimbo.app</string>
                 <key>destination_path</key>
-                <string>%pkgroot%/Applications/VLC.app</string>
-            </dict>
-        </dict>
-        <dict>
-            <key>Processor</key>
-            <string>PkgInfoCreator</string>
-            <key>Arguments</key>
-            <dict>
-                <key>template_path</key>
-                <string>PackageInfoTemplate</string>
-                <key>infofile</key>
-                <string>%RECIPE_CACHE_DIR%/PackageInfo</string>
-                <key>pkgtype</key>
-                <string>flat</string>
+                <string>%pkgroot%/Applications/Yojimbo.app</string>
             </dict>
         </dict>
         <dict>
@@ -76,7 +63,7 @@
                     <key>pkgdir</key>
                     <string>%RECIPE_CACHE_DIR%</string>
                     <key>id</key>
-                    <string>org.videolan.vlc.pkg</string>
+                    <string>com.barebones.yojimbo.pkg</string>
                     <key>chown</key>
                     <array>
                         <dict>
