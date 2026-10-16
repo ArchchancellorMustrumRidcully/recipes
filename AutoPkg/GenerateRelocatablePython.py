@@ -46,13 +46,21 @@ class GenerateRelocatablePython(Processor):
             "required": False,
             "description": "Whether to upgrade pip to the latest version.",
         },
+        "relocatable_python_sha": {
+            "required": False,
+            "description": (
+                "Git commit SHA to check out after cloning relocatable-python. "
+                "Pin this to a known-good commit to avoid surprise breakage from "
+                "upstream changes."
+            ),
+        },
     }
     output_variables = {
         "python_path": {"description": "Path to built Python framework."}
     }
 
     def clone_git_repo(self, target_dir):
-        """Clone the Relocatable Python git repo."""
+        """Clone the Relocatable Python git repo, optionally pinning to a SHA."""
         if os.path.exists(target_dir):
             shutil.rmtree(target_dir)
         git_repo = "https://github.com/gregneagle/relocatable-python.git"
@@ -63,6 +71,17 @@ class GenerateRelocatablePython(Processor):
             subprocess.run(cmd, timeout=3600, check=True)
         except subprocess.CalledProcessError as e:
             raise ProcessorError(e)
+        sha = self.env.get("relocatable_python_sha")
+        if sha:
+            self.output(f"Checking out relocatable-python at {sha}")
+            try:
+                subprocess.run(
+                    ["git", "-C", target_dir, "checkout", sha],
+                    timeout=60,
+                    check=True,
+                )
+            except subprocess.CalledProcessError as e:
+                raise ProcessorError(e)
 
     def build_python_framework(self, target_dir):
         """Build the relocatable python framework."""
@@ -95,6 +114,79 @@ class GenerateRelocatablePython(Processor):
             self.output(results, verbose_level=2)
         return dest
 
+    def install_sitecustomize(self, framework_path):
+        """Write sitecustomize.py so OpenSSL finds certifi's CA bundle after relocation."""
+        major_minor = ".".join(self.env["python_version"].split(".")[:2])
+        site_packages = os.path.join(
+            framework_path,
+            "Versions",
+            major_minor,
+            "lib",
+            f"python{major_minor}",
+            "site-packages",
+        )
+        os.makedirs(site_packages, exist_ok=True)
+        sitecustomize_path = os.path.join(site_packages, "sitecustomize.py")
+        if os.path.exists(sitecustomize_path):
+            self.output(
+                f"sitecustomize.py already exists at {sitecustomize_path}; skipping"
+            )
+            return
+        # OpenSSL's compiled-in CA path doesn't exist after relocation; point at certifi.
+        content = """\
+import os
+
+
+def _ssl_cert_file_is_valid():
+    path = os.environ.get('SSL_CERT_FILE')
+    return bool(path) and os.path.isfile(path)
+
+
+if not _ssl_cert_file_is_valid():
+    try:
+        import certifi
+    except ImportError:
+        pass
+    else:
+        os.environ['SSL_CERT_FILE'] = certifi.where()
+"""
+        with open(sitecustomize_path, "w") as f:
+            f.write(content)
+        self.output(f"Installed sitecustomize.py at {sitecustomize_path}")
+
+    def smoke_test_https(self, framework_path):
+        """Verify that urllib HTTPS works from the built framework."""
+        major_minor = ".".join(self.env["python_version"].split(".")[:2])
+        python_bin = os.path.join(
+            framework_path, "Versions", major_minor, "bin", f"python{major_minor}"
+        )
+        self.output("Smoke-testing HTTPS from built framework...")
+        try:
+            subprocess.run(
+                [
+                    python_bin,
+                    "-c",
+                    (
+                        "import urllib.request; "
+                        "urllib.request.urlopen('https://example.com', timeout=15).close()"
+                    ),
+                ],
+                timeout=30,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+        except subprocess.CalledProcessError as e:
+            detail = e.stderr or e.stdout or str(e)
+            raise ProcessorError(
+                f"HTTPS smoke test failed with exit code {e.returncode}: {detail}"
+            )
+        except subprocess.TimeoutExpired as e:
+            raise ProcessorError(f"HTTPS smoke test timed out: {e}")
+        except OSError as e:
+            raise ProcessorError(f"Could not run framework Python at {python_bin}: {e}")
+        self.output("HTTPS smoke test passed.")
+
     def main(self):
         target_dir = os.path.join(self.env["RECIPE_CACHE_DIR"], "relocatable-python")
         # Clone the relocatable python repo
@@ -103,6 +195,8 @@ class GenerateRelocatablePython(Processor):
         framework_path = self.build_python_framework(target_dir)
         if os.path.exists(framework_path):
             self.output(f"Framework built at {framework_path}")
+            self.install_sitecustomize(framework_path)
+            self.smoke_test_https(framework_path)
             self.env["python_path"] = framework_path
         else:
             raise ProcessorError(f"Framework not found at path {framework_path}")
